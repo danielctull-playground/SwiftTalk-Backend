@@ -24,7 +24,7 @@ struct Users: Rule {
 
 struct Root: Rule {
     var rules: some Rule {
-        Users()//.path("users")
+        Users().path("users")
         "Index"
     }
 }
