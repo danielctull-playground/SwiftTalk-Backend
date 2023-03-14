@@ -1,7 +1,7 @@
 
 import Foundation
 
-public struct Response {
+public struct Response: Equatable, Hashable {
 
     public let statusCode: Int
     public let body: Data

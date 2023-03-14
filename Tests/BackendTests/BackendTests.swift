@@ -30,4 +30,8 @@ struct Root: Rule {
 }
 
 final class BackendTests: XCTestCase {
+
+    func testUsers() {
+        XCTAssertEqual(Users().run(), Response(body: "User Index".toData))
+    }
 }
