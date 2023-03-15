@@ -10,6 +10,14 @@ public enum RuleBuilder {
 //        Response(body: expression.toData)
 //    }
 
+    public static func buildEither<A: Rule, B: Rule>(first component: A) -> Either<A, B> {
+        Either(component)
+    }
+
+    public static func buildEither<A: Rule, B: Rule>(second component: B) -> Either<A, B> {
+        Either(component)
+    }
+
     public static func buildPartialBlock(first: some ToData) -> some Rule {
         Response(body: first.toData)
     }
@@ -24,6 +32,25 @@ public enum RuleBuilder {
 
     public static func buildPartialBlock(accumulated: some Rule, next: some Rule) -> some Rule {
         Pair(a: accumulated, b: next)
+    }
+}
+
+public struct Either<A: Rule, B: Rule>: BuiltinRule, Rule {
+
+    private let kind: Kind
+    private enum Kind {
+        case a(A)
+        case b(B)
+    }
+
+    init(_ a: A) { kind = .a(a) }
+    init(_ b: B) { kind = .b(b) }
+
+    func execute(environment: EnvironmentValues) -> Response? {
+        switch kind {
+        case .a(let a): return a.run(environment: environment)
+        case .b(let b): return b.run(environment: environment)
+        }
     }
 }
 

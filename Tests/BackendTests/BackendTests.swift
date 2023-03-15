@@ -2,22 +2,21 @@
 import Backend
 import XCTest
 
-//struct Profile: Rule {
-//    let id: UUID
-//    var rules: some View {
-//        "User Profile \(id)"
-//    }
-//}
+struct Profile: Rule {
+    let id: Int
+    var rules: some Rule {
+        "User Profile \(id)"
+    }
+}
 
 struct Users: Rule {
     var rules: some Rule {
         PathReader { component in
-            "User \(component)"
-//            if let id = UUID(uuidString: component) {
-//                Profile(id: id)
-//            } else {
-//                "Not found"
-//            }
+            if let id = Int(component) {
+                Profile(id: id)
+            } else {
+                "Not found"
+            }
         }
         "User Index"
     }
@@ -47,7 +46,10 @@ final class BackendTests: XCTestCase {
 
         XCTAssertEqual(
             Root().run(environment: EnvironmentValues(request: Request(path: "/users/foo"))),
-            Response(body: "User foo".toData))
+            Response(body: "Not found".toData))
 
+        XCTAssertEqual(
+            Root().run(environment: EnvironmentValues(request: Request(path: "/users/1"))),
+            Response(body: "User Profile 1".toData))
     }
 }
