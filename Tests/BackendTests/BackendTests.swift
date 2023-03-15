@@ -8,16 +8,17 @@ import XCTest
 //        "User Profile \(id)"
 //    }
 //}
-//
+
 struct Users: Rule {
     var rules: some Rule {
-//        PathReader { component in
+        PathReader { component in
+            "User \(component)"
 //            if let id = UUID(uuidString: component) {
 //                Profile(id: id)
 //            } else {
 //                "Not found"
 //            }
-//        }
+        }
         "User Index"
     }
 }
@@ -43,5 +44,10 @@ final class BackendTests: XCTestCase {
         XCTAssertEqual(
             Root().run(environment: EnvironmentValues(request: Request(path: "/users"))),
             Response(body: "User Index".toData))
+
+        XCTAssertEqual(
+            Root().run(environment: EnvironmentValues(request: Request(path: "/users/foo"))),
+            Response(body: "User foo".toData))
+
     }
 }
