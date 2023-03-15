@@ -32,6 +32,16 @@ struct Root: Rule {
 final class BackendTests: XCTestCase {
 
     func testUsers() {
-        XCTAssertEqual(Users().run(), Response(body: "User Index".toData))
+        XCTAssertEqual(
+            Users().run(environment: EnvironmentValues(request: Request(path: "/"))),
+            Response(body: "User Index".toData))
+
+        XCTAssertEqual(
+            Root().run(environment: EnvironmentValues(request: Request(path: "/"))),
+            Response(body: "Index".toData))
+
+        XCTAssertEqual(
+            Root().run(environment: EnvironmentValues(request: Request(path: "/users"))),
+            Response(body: "User Index".toData))
     }
 }

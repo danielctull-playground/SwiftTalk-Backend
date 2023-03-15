@@ -32,7 +32,10 @@ struct Pair<A: Rule, B: Rule>: BuiltinRule, Rule {
     let a: A
     let b: B
 
-    func execute() -> Response? {
-        nil
+    func execute(environment: EnvironmentValues) -> Response? {
+        if let response = a.run(environment: environment) {
+            return response
+        }
+        return b.run(environment: environment)
     }
 }

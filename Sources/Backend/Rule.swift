@@ -8,11 +8,11 @@ public protocol Rule {
 
 extension Rule {
 
-    public func run() -> Response? {
+    public func run(environment: EnvironmentValues) -> Response? {
         if let builtin = self as? BuiltinRule {
-            return builtin.execute()
+            return builtin.execute(environment: environment)
         } else {
-            return rules.run()
+            return rules.run(environment: environment)
         }
     }
 }

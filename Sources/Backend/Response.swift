@@ -14,7 +14,7 @@ public struct Response: Equatable, Hashable {
 
 extension Response: Rule, BuiltinRule {
 
-    func execute() -> Response? {
+    func execute(environment: EnvironmentValues) -> Response? {
         self
     }
 }
