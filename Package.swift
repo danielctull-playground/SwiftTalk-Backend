@@ -13,8 +13,24 @@ let package = Package(
     products: [
         .library(name: "Backend", targets: ["Backend"]),
     ],
+    dependencies: [
+        .package(url: "https://github.com/swhitty/FlyingFox.git", .upToNextMajor(from: "0.10.0")),
+    ],
     targets: [
+
         .target(name: "Backend"),
-        .testTarget(name: "BackendTests", dependencies: ["Backend"]),
+
+        .executableTarget(
+            name: "BackendFF",
+            dependencies: [
+                "Backend",
+                .product(name: "FlyingFox", package: "FlyingFox"),
+            ]),
+
+        .testTarget(
+            name: "BackendTests",
+            dependencies: [
+                "Backend"
+            ]),
     ]
 )
