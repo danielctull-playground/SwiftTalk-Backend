@@ -3,10 +3,22 @@ import Backend
 import FlyingFox
 import Foundation
 
+struct User {
+    let id: Int
+}
+
+func loadUser(id: Int) async throws -> User? {
+    User(id: id)
+}
+
 struct Users: Rule {
     let id: Int
     var rules: some Rule {
-        "User \(id)"
+        get async throws {
+            if let user = try await loadUser(id: id) {
+                "User \(user.id)"
+            }
+        }
     }
 }
 
@@ -22,7 +34,7 @@ struct Home: Rule {
 
 let server = HTTPServer(port: 8002) { request in
 
-    guard let response = Home().run(environment: EnvironmentValues(request: Request(path: request.path))) else {
+    guard let response = try await Home().run(environment: EnvironmentValues(request: Request(path: request.path))) else {
         return HTTPResponse(statusCode: .notFound)
     }
 
