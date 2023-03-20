@@ -3,14 +3,14 @@ import Foundation
 
 public protocol Rule {
     associatedtype R: Rule
-    @RuleBuilder var rules: R { get }
+    @RuleBuilder var rules: R { get async throws }
 }
 
 extension Rule {
 
-    public func run(environment: EnvironmentValues) -> Response? {
+    public func run(environment: EnvironmentValues) async throws -> Response? {
         if let builtin = self as? BuiltinRule {
-            return builtin.execute(environment: environment)
+            return try await builtin.execute(environment: environment)
         } else {
             let mirror = Mirror(reflecting: self)
             for child in mirror.children {
@@ -18,7 +18,7 @@ extension Rule {
                     property.install(environment)
                 }
             }
-            return rules.run(environment: environment)
+            return try await rules.run(environment: environment)
         }
     }
 }

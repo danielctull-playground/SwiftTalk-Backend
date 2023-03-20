@@ -31,21 +31,26 @@ struct Home: Rule {
 
 final class EnvironmentTests: XCTestCase {
 
-    func testUsers() {
-        XCTAssertEqual(
-            Greeting().run(environment: EnvironmentValues(request: Request(path: "/"))),
-            Response(body: "Hello".toData))
+    func testUsers() async throws {
 
-        XCTAssertEqual(
-            Greeting().environment(\.greeting, "Hi").run(environment: EnvironmentValues(request: Request(path: "/"))),
-            Response(body: "Hi".toData))
+        do {
+            let response = try await Greeting().run(environment: EnvironmentValues(request: Request(path: "/")))
+            XCTAssertEqual(response, Response(body: "Hello".toData))
+        }
 
-        XCTAssertEqual(
-            Home().run(environment: EnvironmentValues(request: Request(path: "/greeting"))),
-            Response(body: "Hello".toData))
+        do {
+            let response = try await Greeting().environment(\.greeting, "Hi").run(environment: EnvironmentValues(request: Request(path: "/")))
+            XCTAssertEqual(response, Response(body: "Hi".toData))
+        }
 
-        XCTAssertEqual(
-            Home().environment(\.greeting, "Hi").run(environment: EnvironmentValues(request: Request(path: "/greeting"))),
-            Response(body: "Hi".toData))
+        do {
+            let response = try await Home().run(environment: EnvironmentValues(request: Request(path: "/greeting")))
+            XCTAssertEqual(response, Response(body: "Hello".toData))
+        }
+
+        do {
+            let response = try await Home().environment(\.greeting, "Hi").run(environment: EnvironmentValues(request: Request(path: "/greeting")))
+            XCTAssertEqual(response, Response(body: "Hi".toData))
+        }
     }
 }

@@ -50,10 +50,10 @@ public struct Either<A: Rule, B: Rule>: BuiltinRule, Rule {
     init(_ a: A) { kind = .a(a) }
     init(_ b: B) { kind = .b(b) }
 
-    func execute(environment: EnvironmentValues) -> Response? {
+    func execute(environment: EnvironmentValues) async throws -> Response? {
         switch kind {
-        case .a(let a): return a.run(environment: environment)
-        case .b(let b): return b.run(environment: environment)
+        case .a(let a): return try await a.run(environment: environment)
+        case .b(let b): return try await b.run(environment: environment)
         }
     }
 }
@@ -63,17 +63,17 @@ struct Pair<A: Rule, B: Rule>: BuiltinRule, Rule {
     let a: A
     let b: B
 
-    func execute(environment: EnvironmentValues) -> Response? {
-        if let response = a.run(environment: environment) {
+    func execute(environment: EnvironmentValues) async throws -> Response? {
+        if let response = try await a.run(environment: environment) {
             return response
         }
-        return b.run(environment: environment)
+        return try await b.run(environment: environment)
     }
 }
 
 extension Optional: Rule, BuiltinRule where Wrapped: Rule {
 
-    func execute(environment: EnvironmentValues) -> Response? {
-        self?.run(environment: environment)
+    func execute(environment: EnvironmentValues) async throws -> Response? {
+        try await self?.run(environment: environment)
     }
 }

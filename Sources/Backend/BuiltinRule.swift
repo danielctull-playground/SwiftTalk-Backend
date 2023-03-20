@@ -1,6 +1,6 @@
 
 protocol BuiltinRule {
-    func execute(environment: EnvironmentValues) -> Response?
+    func execute(environment: EnvironmentValues) async throws -> Response?
 }
 
 extension BuiltinRule {

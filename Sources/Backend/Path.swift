@@ -11,10 +11,10 @@ fileprivate struct PathRule<Base: Rule>: BuiltinRule, Rule {
     let base: Base
     let component: String
 
-    func execute(environment: EnvironmentValues) -> Response? {
+    func execute(environment: EnvironmentValues) async throws -> Response? {
         guard environment.remainingPath.first == component else { return nil }
         var environment = environment
         environment.remainingPath.removeFirst()
-        return base.run(environment: environment)
+        return try await base.run(environment: environment)
     }
 }

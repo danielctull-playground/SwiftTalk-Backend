@@ -77,10 +77,10 @@ struct EnvironmentWriter<Value, Content: Rule>: BuiltinRule, Rule {
     let keyPath: WritableKeyPath<EnvironmentValues, Value>
     let value: Value
 
-    func execute(environment: EnvironmentValues) -> Response? {
+    func execute(environment: EnvironmentValues) async throws -> Response? {
         var environment = environment
         environment[keyPath: keyPath] = value
-        return content.run(environment: environment)
+        return try await content.run(environment: environment)
     }
 }
 

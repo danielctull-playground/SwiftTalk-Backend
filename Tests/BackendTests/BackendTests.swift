@@ -31,25 +31,31 @@ struct Root: Rule {
 
 final class BackendTests: XCTestCase {
 
-    func testUsers() {
-        XCTAssertEqual(
-            Users().run(environment: EnvironmentValues(request: Request(path: "/"))),
-            Response(body: "User Index".toData))
+    func testUsers() async throws {
 
-        XCTAssertEqual(
-            Root().run(environment: EnvironmentValues(request: Request(path: "/"))),
-            Response(body: "Index".toData))
+        do {
+            let response = try await Users().run(environment: EnvironmentValues(request: Request(path: "/")))
+            XCTAssertEqual(response, Response(body: "User Index".toData))
+        }
 
-        XCTAssertEqual(
-            Root().run(environment: EnvironmentValues(request: Request(path: "/users"))),
-            Response(body: "User Index".toData))
+        do {
+            let response = try await Root().run(environment: EnvironmentValues(request: Request(path: "/")))
+            XCTAssertEqual(response, Response(body: "Index".toData))
+        }
 
-        XCTAssertEqual(
-            Root().run(environment: EnvironmentValues(request: Request(path: "/users/foo"))),
-            Response(body: "Not found".toData))
+        do {
+            let response = try await Root().run(environment: EnvironmentValues(request: Request(path: "/users")))
+            XCTAssertEqual(response, Response(body: "User Index".toData))
+        }
 
-        XCTAssertEqual(
-            Root().run(environment: EnvironmentValues(request: Request(path: "/users/1"))),
-            Response(body: "User Profile 1".toData))
+        do {
+            let response = try await Root().run(environment: EnvironmentValues(request: Request(path: "/users/foo")))
+            XCTAssertEqual(response, Response(body: "Not found".toData))
+        }
+
+        do {
+            let response = try await Root().run(environment: EnvironmentValues(request: Request(path: "/users/1")))
+            XCTAssertEqual(response, Response(body: "User Profile 1".toData))
+        }
     }
 }
