@@ -33,6 +33,10 @@ public enum RuleBuilder {
     public static func buildPartialBlock(accumulated: some Rule, next: some Rule) -> some Rule {
         Pair(a: accumulated, b: next)
     }
+
+    public static func buildOptional<R: Rule>(_ component: R?) -> R? {
+        component
+    }
 }
 
 public struct Either<A: Rule, B: Rule>: BuiltinRule, Rule {
@@ -64,5 +68,12 @@ struct Pair<A: Rule, B: Rule>: BuiltinRule, Rule {
             return response
         }
         return b.run(environment: environment)
+    }
+}
+
+extension Optional: Rule, BuiltinRule where Wrapped: Rule {
+
+    func execute(environment: EnvironmentValues) -> Response? {
+        self?.run(environment: environment)
     }
 }
