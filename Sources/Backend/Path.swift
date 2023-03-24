@@ -2,16 +2,15 @@
 extension Rule {
 
     public func path(_ component: String) -> some Rule {
-        PathRule(content: self, expectedComponent: component)
+        modifier(Path(expectedComponent: component))
     }
 }
 
-fileprivate struct PathRule<Content: Rule>: Rule {
+private struct Path: RuleModifier {
 
-    let content: Content
     let expectedComponent: String
 
-    var rules: some Rule {
+    func rules(content: Content) -> some Rule {
         PathReader { component in
             if component == expectedComponent {
                 content
