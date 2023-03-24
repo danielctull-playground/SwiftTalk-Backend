@@ -2,19 +2,20 @@
 extension Rule {
 
     public func path(_ component: String) -> some Rule {
-        PathRule(base: self, component: component)
+        PathRule(content: self, expectedComponent: component)
     }
 }
 
-fileprivate struct PathRule<Base: Rule>: BuiltinRule, Rule {
+fileprivate struct PathRule<Content: Rule>: Rule {
 
-    let base: Base
-    let component: String
+    let content: Content
+    let expectedComponent: String
 
-    func execute(environment: EnvironmentValues) async throws -> Response? {
-        guard environment.remainingPath.first == component else { return nil }
-        var environment = environment
-        environment.remainingPath.removeFirst()
-        return try await base.run(environment: environment)
+    var rules: some Rule {
+        PathReader { component in
+            if component == expectedComponent {
+                content
+            }
+        }
     }
 }
