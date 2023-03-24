@@ -26,12 +26,13 @@ extension Rule {
     }
 }
 
-private struct Modified<C: Rule, Modifier: RuleModifier>: Rule {
+private struct Modified<C: Rule, Modifier: RuleModifier>: Rule, BuiltinRule {
 
     let content: C
     let modifier: Modifier
 
-    var rules: some Rule {
-        modifier.rules(content: Content(content))
+    func execute(environment: EnvironmentValues) async throws -> Response? {
+        install(environment: environment, on: modifier)
+        return try await modifier.rules(content: Content(content)).run(environment: environment)
     }
 }

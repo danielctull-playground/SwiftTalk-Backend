@@ -29,6 +29,15 @@ struct Home: Rule {
     }
 }
 
+struct GreetingModifier: RuleModifier {
+
+    @Environment(\.greeting) var greeting
+
+    func rules(content: Content) -> some Rule {
+        content.environment(\.greeting, "\(greeting) modified")
+    }
+}
+
 final class EnvironmentTests: XCTestCase {
 
     func testUsers() async throws {
@@ -52,5 +61,13 @@ final class EnvironmentTests: XCTestCase {
             let response = try await Home().environment(\.greeting, "Hi").run(environment: EnvironmentValues(request: Request(path: "/greeting")))
             XCTAssertEqual(response, Response(body: "Hi".toData))
         }
+    }
+
+    func testRuleModifier() async throws {
+        let rule = Greeting()
+            .modifier(GreetingModifier())
+            .environment(\.greeting, "Good day")
+        let response = try await rule.run(environment: EnvironmentValues(request: Request(path: "/")))
+        XCTAssertEqual(response, Response(body: "Good day modified".toData))
     }
 }
