@@ -12,6 +12,7 @@ let package = Package(
     ],
     products: [
         .library(name: "Backend", targets: ["Backend"]),
+        .library(name: "CodableRouting", targets: ["CodableRouting"]),
     ],
     dependencies: [
         .package(url: "https://github.com/swhitty/FlyingFox.git", .upToNextMajor(from: "0.10.0")),
@@ -32,5 +33,13 @@ let package = Package(
             dependencies: [
                 "Backend"
             ]),
+
+        .target(name: "CodableRouting"),
+
+            .testTarget(
+                name: "CodableRoutingTests",
+                dependencies: [
+                    "CodableRouting"
+                ]),
     ]
 )
